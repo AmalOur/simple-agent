@@ -5,6 +5,7 @@ import pytest
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.store.memory import InMemoryStore
 
+from simple_agent.context import Context
 from simple_agent.graph import builder
 
 
@@ -38,7 +39,8 @@ async def test_memory_storage(conversation: List[str]):
     for content in conversation:
         await graph.ainvoke(
             {"messages": [("user", content)]},
-            {"thread_id": "thread"}
+            {"thread_id": "thread"},
+            context=Context(user_id=user_id),
         )
 
     namespace = ("memories", user_id)
