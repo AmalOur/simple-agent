@@ -3,13 +3,13 @@
 import os
 from typing import TypedDict
 
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph
 
 
 class AgentState(TypedDict):
-    """User-facing state for the simple agent."""
-    input: str  # required user-provided input
+    """State schema: only user-provided input is required."""
+    input: str
 
 
 def get_llm() -> ChatOpenAI:
@@ -25,25 +25,13 @@ def get_llm() -> ChatOpenAI:
     )
 
 
-def get_embeddings() -> OpenAIEmbeddings:
-    """Lazily initialize the embeddings model from environment variables."""
-    api_key = os.getenv("EMB_API_KEY")
-    if not api_key:
-        raise RuntimeError("Missing environment variable: EMB_API_KEY")
-
-    return OpenAIEmbeddings(
-        model="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
-        base_url="https://inference-instance-gte-qwen2-ust2hkbr.ai.gcore.dev/v1/embeddings",
-        api_key=api_key,
-    )
-
-
 def call_llm(state: AgentState) -> dict:
     """Call the LLM with the user input and return its response."""
     llm = get_llm()
     response = llm.invoke(state["input"])
-    # ✅ output is added dynamically, not part of the input schema
-    return {"output": response.content}
+    return {
+        "output": response.content  # ✅ only return output
+    }
 
 
 # ✅ Build workflow
