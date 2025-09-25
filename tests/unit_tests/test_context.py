@@ -1,6 +1,6 @@
 import os
 
-from memory_agent.context import Context
+from simple_agent.context import Context
 
 
 def test_context_init() -> None:
