@@ -1,20 +1,15 @@
 """LangGraph workflow that connects to Qwen LLM and embeddings."""
 
 import os
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langgraph.graph import END, StateGraph
 
 
 class AgentState(TypedDict):
-    """Required fields for the simple agent state."""
-    input: str  # user-provided
-
-
-class AgentStateOptional(AgentState, total=False):
-    """Optional fields for the simple agent state."""
-    output: Optional[str]  # generated internally by the graph
+    """User-facing state for the simple agent."""
+    input: str  # required user-provided input
 
 
 def get_llm() -> ChatOpenAI:
@@ -43,15 +38,16 @@ def get_embeddings() -> OpenAIEmbeddings:
     )
 
 
-def call_llm(state: AgentStateOptional) -> dict:
+def call_llm(state: AgentState) -> dict:
     """Call the LLM with the user input and return its response."""
     llm = get_llm()
     response = llm.invoke(state["input"])
+    # ✅ output is added dynamically, not part of the input schema
     return {"output": response.content}
 
 
 # ✅ Build workflow
-builder = StateGraph(AgentStateOptional)
+builder = StateGraph(AgentState)
 builder.add_node("agent", call_llm)
 builder.set_entry_point("agent")
 builder.add_edge("agent", END)
