@@ -1,6 +1,10 @@
+"""LangGraph workflow that connects to Qwen LLM and embeddings."""
+
 import os
-from langgraph.graph import StateGraph, END
+
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langgraph.graph import END, StateGraph
+
 
 # Load secrets from environment (LangGraph or .env)
 LLM_API_KEY = os.environ["LLM_API_KEY"]
@@ -20,15 +24,19 @@ embeddings = OpenAIEmbeddings(
     api_key=EMB_API_KEY,
 )
 
-# Define simple state
+
 class AgentState(dict):
+    """State for the simple LangGraph agent."""
+
     input: str
     output: str
 
-# Node: call the LLM
+
 def call_llm(state: AgentState):
+    """Call the LLM with the user input and return its response."""
     response = llm.invoke(state["input"])
     return {"output": response.content}
+
 
 # Build workflow
 graph = StateGraph(AgentState)
