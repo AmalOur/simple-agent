@@ -1,8 +1,8 @@
 """LangGraph workflow that connects to Qwen LLM and embeddings.""" 
 
 import os 
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings from langgraph.graph 
-import END, StateGraph 
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings 
+from langgraph.graph import END, StateGraph 
 from dataclasses import dataclass
 from typing import Optional
 
