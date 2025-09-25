@@ -6,25 +6,6 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langgraph.graph import END, StateGraph
 
 
-# ✅ Load secrets from environment (LangGraph or .env)
-LLM_API_KEY = os.environ["LLM_API_KEY"]
-EMB_API_KEY = os.environ["EMB_API_KEY"]
-
-# ✅ Initialize the chat model
-llm = ChatOpenAI(
-    model="Qwen/Qwen3-30B-A3B",
-    base_url="https://inference-instance-qwen3-30b-ust2hkbr.ai.gcore.dev/v1",
-    api_key=LLM_API_KEY,
-)
-
-# ✅ Initialize embeddings (not used in this simple workflow yet)
-embeddings = OpenAIEmbeddings(
-    model="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
-    base_url="https://inference-instance-gte-qwen2-ust2hkbr.ai.gcore.dev/v1/embeddings",
-    api_key=EMB_API_KEY,
-)
-
-
 class AgentState(dict):
     """State for the simple LangGraph agent."""
 
@@ -32,8 +13,35 @@ class AgentState(dict):
     output: str
 
 
+def get_llm():
+    """Lazily initialize the chat model from environment variables."""
+    api_key = os.getenv("LLM_API_KEY")
+    if not api_key:
+        raise RuntimeError("Missing environment variable: LLM_API_KEY")
+
+    return ChatOpenAI(
+        model="Qwen/Qwen3-30B-A3B",
+        base_url="https://inference-instance-qwen3-30b-ust2hkbr.ai.gcore.dev/v1",
+        api_key=api_key,
+    )
+
+
+def get_embeddings():
+    """Lazily initialize the embeddings model from environment variables."""
+    api_key = os.getenv("EMB_API_KEY")
+    if not api_key:
+        raise RuntimeError("Missing environment variable: EMB_API_KEY")
+
+    return OpenAIEmbeddings(
+        model="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
+        base_url="https://inference-instance-gte-qwen2-ust2hkbr.ai.gcore.dev/v1/embeddings",
+        api_key=api_key,
+    )
+
+
 def call_llm(state: AgentState):
     """Call the LLM with the user input and return its response."""
+    llm = get_llm()
     response = llm.invoke(state["input"])
     return {"output": response.content}
 
