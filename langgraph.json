@@ -4,5 +4,6 @@
         "agent": "./src/simple_agent/graph.py:graph"
     },
     "env": ".env",
+    "python_version": "3.11",
     "dependencies": ["."]
 }
