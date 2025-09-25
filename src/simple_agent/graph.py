@@ -3,11 +3,14 @@
 import os from langchain_openai 
 import ChatOpenAI, OpenAIEmbeddings from langgraph.graph 
 import END, StateGraph 
+from dataclasses import dataclass
+from typing import Optional
 
+@dataclass
 class AgentState(dict): 
     """State for the simple LangGraph agent.""" 
     input: str 
-    output: str 
+    output: Optional[str] = None 
     
     def get_llm(): 
         """Lazily initialize the chat model from environment variables.""" 
