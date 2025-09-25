@@ -27,10 +27,10 @@ requires = ["setuptools>=73.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["memory_agent"]
+packages = ["simple_agent"]
 [tool.setuptools.package-dir]
-"memory_agent" = "src/memory_agent"
-"langgraph.templates.memory_agent" = "src/memory_agent"
+"simple_agent" = "src/simple_agent"
+"langgraph.templates.simple_agent" = "src/simple_agent"
 
 
 [tool.setuptools.package-data]
