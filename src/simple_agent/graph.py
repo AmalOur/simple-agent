@@ -2,8 +2,8 @@
 
 import os
 
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langgraph.graph import END, StateGraph
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 
 # Load secrets from environment (LangGraph or .env)
