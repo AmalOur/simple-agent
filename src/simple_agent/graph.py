@@ -2,22 +2,22 @@
 
 import os
 
-from langgraph.graph import END, StateGraph
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langgraph.graph import END, StateGraph
 
 
-# Load secrets from environment (LangGraph or .env)
+# ✅ Load secrets from environment (LangGraph or .env)
 LLM_API_KEY = os.environ["LLM_API_KEY"]
 EMB_API_KEY = os.environ["EMB_API_KEY"]
 
-# Configure the LLM (Chat model)
+# ✅ Initialize the chat model
 llm = ChatOpenAI(
     model="Qwen/Qwen3-30B-A3B",
     base_url="https://inference-instance-qwen3-30b-ust2hkbr.ai.gcore.dev/v1",
     api_key=LLM_API_KEY,
 )
 
-# Configure the Embedding model (not used in this simple workflow yet)
+# ✅ Initialize embeddings (not used in this simple workflow yet)
 embeddings = OpenAIEmbeddings(
     model="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
     base_url="https://inference-instance-gte-qwen2-ust2hkbr.ai.gcore.dev/v1/embeddings",
@@ -38,8 +38,13 @@ def call_llm(state: AgentState):
     return {"output": response.content}
 
 
-# Build workflow
-graph = StateGraph(AgentState)
-graph.add_node("agent", call_llm)
-graph.set_entry_point("agent")
-graph.add_edge("agent", END)
+# ✅ Build workflow
+builder = StateGraph(AgentState)
+builder.add_node("agent", call_llm)
+builder.set_entry_point("agent")
+builder.add_edge("agent", END)
+
+graph = builder.compile()
+graph.name = "SimpleAgent"
+
+__all__ = ["graph"]
